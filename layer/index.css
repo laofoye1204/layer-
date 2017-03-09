@@ -1,0 +1,80 @@
+* {
+  margin: 0;
+  padding: 0; }
+
+html, body {
+  width: 100%;
+  height: 100%; }
+
+.maxBox {
+  position: relative;
+  z-index: 9999998;
+  cursor: move; }
+
+.layer {
+  background: #ccc;
+  position: absolute; }
+
+.popWin {
+  position: absolute;
+  border: 1px solid #000;
+  left: 50%;
+  top: 50%;
+  color: #000;
+  -webkit-transform: translate(-50%, -50%);
+  z-index: 9999999;
+  border-radius: 10px;
+  padding: 5px 10px;
+  background: #fff; }
+  .popWin .titleBox {
+    width: 100%;
+    box-sizing: border-box;
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #333; }
+    .popWin .titleBox .close {
+      position: absolute;
+      top: 3px;
+      right: 10px;
+      font-size: 28px;
+      -webkit-transform: rotate(45deg);
+      color: #666; }
+      .popWin .titleBox .close:hover {
+        color: #000;
+        -webkit-transform: scale(1.1) rotate(45deg); }
+  .popWin .btnBox {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px; }
+    .popWin .btnBox .yesBtn, .popWin .btnBox .noBtn {
+      float: right;
+      padding: 0px 5px;
+      font-size: 12px;
+      background: #fff;
+      border-radius: 5px;
+      margin-left: 10px; }
+      .popWin .btnBox .yesBtn:hover, .popWin .btnBox .noBtn:hover {
+        -webkit-transform: scale(1.2); }
+    .popWin .btnBox .yesBtn {
+      right: 70px; }
+    .popWin .btnBox .active {
+      background: #abcdef; }
+  .popWin .content {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px 0;
+    font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; }
+
+.hide {
+  -webkit-transition: opacity .6s;
+  opacity: 0; }
+
+/*# sourceMappingURL=index.css.map */

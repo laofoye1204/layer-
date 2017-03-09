@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<title>Document</title>
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	<!--弹出层基本结构-->
+	<!-- <div id="layerBox" class="maxBox">
+		<div  class="layer"></div>
+		<div class="popWin">
+			<div class="titleBox">
+				<span>消息</span>
+				<span class="close">+</span>
+			</div>
+			<div class="content">content内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容</div>
+			<div class="btnBox">
+				<span class="yesBtn active">确认</span>
+				<span class="noBtn">取消</span>
+			</div>
+		</div> 
+	</div>-->
+	<script>
+	          var Layer=function(options){
+	          	   this.class=options.class,
+                   this.hasMask=options.hasMask,
+                   this.hasTitleBox=options.hasTitleBox,
+                   this.isTitle=this.hasTitleBox.is,
+                   this.titleMsg=this.hasTitleBox.titleMsg,
+                   this.isClosed=this.hasTitleBox.isClosed,
+                   this.hasClosed=this.hasTitleBox.hasClosed,
+                   this.content=options.content,
+                   this.hasBtnBox=options.hasBtnBox,
+                   this.noBtn=this.hasBtnBox.noBtn,
+                   this.yesBtn=this.hasBtnBox.yesBtn,
+                   this.noCallBack=this.hasBtnBox.noCallBack,
+                   this.yesCallBack=this.hasBtnBox.yesCallBack,
+                   this.isDrag=options.isDrag;
+                   this.winW=document.documentElement.clientWidth || document.body.clientWidth;
+                   this.winH=document.documentElement.clientHeight || document.body.clientHeight;
+                   this.init();
+	          }
+	          Layer.prototype.init=function(){
+	          	//创建最外层大盒子
+                    this.layerBox=document.createElement('div');
+                    document.body.appendChild(this.layerBox);
+                    var className=this.class?this.class+" "+'maxBox':"maxBox";
+                    this.layerBox.className=className;
+                    this.layerBox.style.width=this.winW+'px';
+                    this.layerBox.style.height=this.winH+'px';
+                    //创建遮罩层
+                    this.hasMaskFn();
+                    this.haspopFn();
+                    this.hasTitleFn();;
+                    this.hasBtnFn();
+                    this.hasContentFn();
+                    if(this.isDrag!=false){
+                    	this.isDragFn();
+                    }
+              };
+              Layer.prototype.hasMaskFn=function(){
+                    this.hasMaskBox=document.createElement('div');
+                    this.layerBox.appendChild(this.hasMaskBox);
+
+                    var clas=this.hasMask?this.hasMask+" "+'layer':"layer";
+                    this.hasMaskBox.className=clas;
+                    //设置遮罩层宽和高
+                     this.hasMaskBox.style.width=this.winW+'px';
+                     this.hasMaskBox.style.height=this.winH+'px';
+              };
+              Layer.prototype.haspopFn=function(){
+                    this.haspopBox=document.createElement('div');
+                    this.layerBox.appendChild(this.haspopBox);
+                    this.haspopBox.className='popWin';
+                    if(this.winW>=768){
+                    	this.haspopBox.style.width='250px';
+                    	this.haspopBox.style.height="150px";
+                    }else{
+                    	this.haspopBox.style.width='35%';
+                    	this.haspopBox.style.height="20%";
+                    }
+                    
+              }
+              Layer.prototype.hasTitleFn=function(){
+              	   if(!this.isTitle) return false;
+                    this.hasTitleBox=document.createElement('div');
+                    this.haspopBox.appendChild(this.hasTitleBox);
+                    this.hasTitleBox.className='titleBox';
+                    //判断是否传入头部信息
+                    var msg= this.titleMsg?this.titleMsg:"消息";
+                    var span1=document.createElement('span');
+                    this.hasTitleBox.appendChild(span1);
+                    span1.innerHTML=msg;
+                    var that=this;
+                    if(this.isClosed){
+                        var closeClas= this.hasClosed?this.hasClosed+" "+"close":"close";
+	                    var span2=document.createElement('span');
+	                    span2.className=closeClas;
+	                    span2.innerHTML='+';
+	                    this.hasTitleBox.appendChild(span2);
+	                    span2.onclick=function(){
+                             that.hide();
+	                    }
+                    }                    
+              }
+          
+              Layer.prototype.hasContentFn=function(){
+                    this.hasContentBox=document.createElement('div');
+                    var contentClass=this.content.clas?"centent"+" "+this.content.clas:"content";
+                    this.hasContentBox.className=contentClass;
+                    this.hasContentBox.innerHTML=this.content.msg;
+                    var conH=this.haspopBox.offsetHeight-this.hasTitleBox.offsetHeight-this.hasBtnBox.offsetHeight;
+                    this.hasContentBox.style.height=conH+'px';
+                    this.haspopBox.insertBefore(this.hasContentBox, this.hasBtnBox);
+              }
+              Layer.prototype.hasBtnFn=function(){
+                    this.hasBtnBox=document.createElement('div');
+                    this.haspopBox.appendChild(this.hasBtnBox);
+                    this.hasBtnBox.className='btnBox';
+                    var that=this;
+                    if(this.noBtn!==false){
+                    	var noBtn=document.createElement('span');
+                    	if(this.noBtn===true || this.noBtn=='undefined'){
+                          noBtn.className='noBtn';
+                          noBtn.innerHTML="取消";
+                    	}else if(this.noBtn.includes('.')){
+                    	  noBtn.className='noBtn'+" "+this.noBtn.slice(1);
+                    	  noBtn.innerHTML="取消";
+                    	}else{
+                    	  noBtn.innerHTML=this.noBtn;
+                    	   noBtn.className='noBtn';
+                    	}
+                    	if(this.yesBtn===false){
+                    		if(this.hasBtnBox.active){
+	                    		noBtn.className+=this.hasBtnBox.active;
+	                    	}else{
+	                    		noBtn.className+=" "+"active";
+	                    	}
+                    	}
+                    	
+                    	this.hasBtnBox.appendChild(noBtn);
+                    	noBtn.onclick=function(){
+                           that.noCallBack();
+                           that.hide();
+                    	}
+                    }
+                    if(this.yesBtn!==false){
+                    	var yesBtn=document.createElement('span');
+                    	if(this.yesBtn===true  || this.yesBtn=='undefined'){
+                          yesBtn.className='yesBtn';
+                          yesBtn.innerHTML="确认";
+                    	}else if(this.yesBtn.includes('.')){
+                    	  yesBtn.className='yesBtn'+" "+this.yesBtn.slice(1);
+                    	  yesBtn.innerHTML="确认";
+                    	}else{
+                    		noBtn.innerHTML=this.noBtn;
+                    		yesBtn.className='yesBtn';
+                    	}
+                    	if(this.hasBtnBox.active){
+                    		yesBtn.className+=this.hasBtnBox.active;
+                    	}else{
+                    		yesBtn.className+=" "+"active";
+                    	}
+                    	this.hasBtnBox.appendChild(yesBtn);
+                    	yesBtn.onclick=function(){
+                           that.yesCallBack();
+                           that.hide();
+                    	}
+                    }
+                    
+              }
+              Layer.prototype.isDragFn=function(){
+              	   var isDragP=false;
+	              	document.onmousedown=function(e){
+	              		var e= e || window.event;
+	                   //获取鼠标在弹出框上的位置
+	                   if(e.target.parentNode.className=='popWin'){
+	                   	var tar=e.target.parentNode;
+	                       var divL=e.clientX-tar.offsetLeft;
+	                       var divH=e.clientY-tar.offsetTop;
+	                   }
+		                document.onmousemove=function(e){
+							var event=e||window.event;
+							var x=event.clientX;
+							var y=event.clientY;
+							var l=x-divL;
+							var t=y-divH;
+							var maxW=document.documentElement.clientWidth-tar.offsetWidth;
+							var maxH=document.documentElement.clientHeight-tar.offsetHeight;
+							if(l<0)l=0;
+							if(t<0)t=0;
+							if(l>maxW)l=maxW;
+							if(t>maxH)t=maxH;
+							tar.style.left=l+"px";
+							tar.style.top=t+"px";
+						}
+	              	}
+				    document.onmouseup=function(){
+						document.onmousemove=null;
+					}
+              }
+              Layer.prototype.hide=function(){
+              	var that=this;
+              	this.haspopBox.className+=" "+'hide';
+              	setTimeout(function(){
+              		that.layerBox.className+=" "+'hide';
+              	},600);
+              }
+	          new Layer({
+	          	//class:"maxBox",//表示遮罩的大盒子添加自己的样式类名,
+	          	//hasMask:'layer',//是否有遮罩层有的话 有的话可以传入自己的样式类名，无类可以传入true
+                hasTitleBox:{
+                	is:true,      //是否需要表头
+                	isClosed:true, //是否需要关闭按钮
+                	"titleMsg":"警告",//自定义头部内容
+                	 hasClosed:"close1"// 传入关闭按钮自定义class
+                },
+                content:{              
+                  msg:"内荣",     //传入主体内容
+                  clas:"",         //传入主体自定义样式
+                },
+                hasBtnBox:{       
+                   active:"",       //高亮样式
+                   yesBtn:true,    //确认按钮,为false 不要确认按钮
+				                   /* 为true 确认按钮是默认样式 内容是确认 
+				                    以.开头 按钮除了默认样式 还添加自定义样式 
+				                    不为空的需要字符 为按钮的自定义内容*/
+                   noBtn:true,
+                   yesCallBack:function(){
+                   	alert('点击了确认');
+                   },
+                   noCallBack:function(){
+                   	alert('点击了取消');
+                   }
+                },
+                isDrag:true        //弹出框是不是可以拖动 默认是可以
+	          })
+	</script>	
+
+</body>
+</html>
